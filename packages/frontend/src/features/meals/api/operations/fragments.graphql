@@ -1,0 +1,15 @@
+fragment MealFields on Meal {
+  id
+  name
+  description
+  imageUrl
+  category
+  ingredients
+  nutritionalInfo {
+    calories
+    protein
+    carbs
+    fat
+    fiber
+  }
+}

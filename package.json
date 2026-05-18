@@ -1,0 +1,18 @@
+{
+  "name": "dishlist",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "dev:deps": "docker-compose -f packages/dev-environment/docker-compose.yml up",
+    "dev:deps:detached": "docker-compose -f packages/dev-environment/docker-compose.yml up -d",
+    "user-service:dev": "pnpm --filter user-service start:dev",
+    "meal-service:dev": "pnpm --filter meal-service start:dev",
+    "frontend:start": "pnpm --filter frontend start",
+    "frontend:ios": "pnpm --filter frontend ios",
+    "frontend:codegen": "pnpm --filter frontend codegen"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

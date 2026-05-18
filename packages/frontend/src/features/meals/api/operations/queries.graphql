@@ -1,0 +1,17 @@
+query GetMeals($userId: ID!) {
+  meals(userId: $userId) {
+    ...MealFields
+  }
+}
+
+query GetArchivedMeals($userId: ID!) {
+  archivedMeals(userId: $userId) {
+    ...MealFields
+  }
+}
+
+query GetMeal($id: ID!) {
+  meal(id: $id) {
+    ...MealFields
+  }
+}

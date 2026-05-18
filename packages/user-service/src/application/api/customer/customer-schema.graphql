@@ -1,0 +1,55 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.6"
+    import: ["@key"]
+  )
+
+type Query {
+  hello: String!
+}
+
+type Mutation {
+  login(input: LoginInput!): AuthPayload!
+  logout: Boolean!
+  signUp(input: SignUpInput!): User!
+  joinWaitlist(input: JoinWaitlistInput!): User!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+}
+
+enum UserAccountStatus {
+  QUEUED
+  ACTIVE
+  INACTIVE
+}
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  primaryEmail: String!
+  secondaryEmail: String
+  accountStatus: UserAccountStatus
+  createdAt: String!
+  updatedAt: String!
+}
+
+input SignUpInput {
+  firstName: String!
+  lastName: String!
+  primaryEmail: String!
+  secondaryEmail: String
+}
+
+input JoinWaitlistInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+}

@@ -1,0 +1,194 @@
+# Cursor Agent Rules for React Native Feature-Based Architecture
+
+## Project Overview
+This is a React Native app using Expo Router with a feature-based architecture pattern. The codebase follows high separation of concerns principles.
+
+## Architecture Pattern
+- **Feature-Based Architecture**: Each feature is self-contained in `src/features/`
+- **Shared Code**: Common utilities, types, and hooks live in `src/shared/`
+- **Public API Pattern**: Features export only public APIs through `index.ts` files
+
+## Directory Structure
+```
+src/
+├── features/          # Business features (meals, orders, users, etc.)
+│   └── [feature-name]/
+│       ├── api/       # API calls specific to feature
+│       ├── components/ # Feature-specific components
+│       ├── hooks/     # Feature-specific hooks
+│       ├── types/     # Feature-specific TypeScript types
+│       ├── utils/     # Feature-specific utilities
+│       └── index.ts   # Public API (barrel export)
+├── shared/            # Shared code across features
+│   ├── api/          # API client configuration
+│   ├── hooks/        # Shared React hooks
+│   ├── types/        # Shared TypeScript types
+│   └── utils/        # Shared utility functions
+└── app/              # Expo Router app configuration
+
+test/                  # Test files mirror src/ structure
+└── features/
+    └── [feature-name]/
+        └── [file-name].test.ts
+```
+
+## Import Paths
+- Use `@/src/features/[feature-name]` for feature imports
+- Use `@/src/shared` for shared code imports
+- Use `@/` for root-level imports (components, hooks, constants)
+
+## Code Style & Conventions
+
+### TypeScript
+- Always use TypeScript with strict mode
+- **ALL declarations MUST have a corresponding type** - This is TypeScript, not JavaScript
+- Define types in feature-specific `types/` directories
+- Use shared types from `@/src/shared/types` for common patterns
+- **Prefer `interface` over `type`** - Use interfaces as much as necessary
+- **Use enums as much as possible** - Prefer enums over string literals or magic values
+- **Never build input/response type objects inline** - Always define interfaces for API requests/responses
+- **Minimize inline declarations** - Extract types, constants, and values to named declarations at the top of files
+- **NEVER use `as` type assertions** - Use proper type guards, type narrowing, or fix the underlying type issues instead
+- Use explicit return types for functions
+
+### React Components
+- Use functional components with TypeScript
+- Use `React.FC` or explicit return types
+- Keep components focused and single-purpose
+- Place feature-specific components in `features/[feature]/components/`
+- Place shared/reusable components in root `components/` directory
+
+### Hooks
+- Create custom hooks for data fetching and mutations
+- Use the `AsyncState` pattern for loading/error states
+- Separate query hooks (`use-[feature]`) from mutation hooks (`use-[feature]-mutations`)
+- Place hooks in `features/[feature]/hooks/`
+
+### API Calls
+- All API calls go through the shared `apiClient` from `@/src/shared/api/client`
+- Place API functions in `features/[feature]/api/[feature]-api.ts`
+- Always handle errors appropriately
+- Use TypeScript types for request/response payloads
+
+### File Naming
+- Use kebab-case for file names: `meal-card.tsx`, `use-meals.ts`
+- Use PascalCase for component names: `MealCard`, `MealList`
+- Use camelCase for hook names: `useMeals`, `useCreateMeal`
+- Use camelCase for utility functions: `formatPrice`, `getCategoryDisplayName`
+
+### Import Organization
+- Group imports: external packages → internal imports
+- Sort imports alphabetically within groups
+- Use type-only imports when appropriate: `import type { ... }`
+
+### Constants & Values
+- **Constants MUST be defined at the top of files** (after imports, before code)
+- **No magic numbers** - Use constants for all numbers except `0` and `1`
+- **No hardcoded strings** - All strings must be constants
+- **No inline values** - Extract all values to constants, enums, or named declarations
+- Group related constants together
+- Use descriptive constant names
+- Prefer enums over string constants when values are related
+
+### Variable Declarations
+- **NEVER use `let`** - Always use `const`
+- Use ternary operators with `const` when conditional assignment is needed
+- Example: `const value = condition ? optionA : optionB;`
+
+### Code Clarity
+- **NO COMMENTS** - Code should be self-documenting through clear naming
+- **NO inline comments** - Never add comments in code
+- **Always prefer simple, understandable code** - No confusing or clever code
+- **NEVER use `reduce()`** - It's confusing; use `map()`, `filter()`, `forEach()`, or loops instead
+- **Minimize inline declarations** - Extract values, types, and logic to named declarations
+- Prioritize readability and maintainability over cleverness
+
+## Best Practices
+
+### Feature Development
+1. **Keep features independent**: Features should not directly import from other features
+2. **Public API only**: Other parts of the app should only import from feature's `index.ts`
+3. **Co-location**: Keep related code together (types with features, not in shared)
+4. **Separation of concerns**: API calls, business logic, and UI should be separated
+
+### State Management
+- Use custom hooks for state management
+- Follow the `AsyncState` pattern for async operations
+- Handle loading, success, and error states consistently
+
+### Error Handling
+- Always handle errors in API calls
+- Provide meaningful error messages
+- Use the `ApiError` class from shared API client
+
+### Code Organization
+- One feature per directory
+- One component per file
+- One hook per file (unless closely related)
+- Group related utilities in the same file
+
+## React Native Specific
+
+### Components
+- Use React Native components: `View`, `Text`, `FlatList`, etc.
+- Use `StyleSheet.create()` for styles
+- Prefer `TouchableOpacity` over `Button` for custom styling
+- Use `expo-image` for images when possible
+
+### Navigation
+- Use Expo Router for navigation
+- Place routes in `app/` directory
+- Use file-based routing conventions
+
+### Performance & Readability
+- **Performance and readability are TOP priorities**
+- Use `React.memo` for expensive components when needed
+- Use `useCallback` and `useMemo` appropriately
+- Implement proper list virtualization with `FlatList`
+- Optimize for both runtime performance and code maintainability
+
+## When Adding New Features
+
+1. Create directory: `src/features/[feature-name]/`
+2. Set up structure: `api/`, `components/`, `hooks/`, `types/`, `utils/`
+3. Create `index.ts` with public exports
+4. Follow existing patterns from `meals` feature
+5. Document the feature in its README if complex
+
+## When Modifying Code
+
+- Maintain existing patterns and conventions
+- Update types when changing data structures
+- Keep features isolated - don't create cross-feature dependencies
+- Add appropriate error handling
+- Include loading states for async operations
+- Write self-documenting code with clear variable names
+
+## Testing Rules
+
+### Test Structure
+- **All tests go in `/test` folder** at the same level as `/src` (not inside `src/`)
+- Test file structure: `test/features/[feature-name]/[file-name].test.ts`
+- Mirror the `src/` directory structure in `test/`
+
+### Test Data & Mocking
+- **Use Faker.js library** to generate mock values - NO hardcoded values in tests
+- **Group all related dependencies at the top of test files** in `describe` blocks
+- Create factory functions for complex test data
+- **NO creating factories inline in test files** - Extract factories to separate files if needed
+
+### Test Writing Principles
+- **DON'T REPEAT YOURSELF (DRY)** - AT ALL
+- **Each test case has MAX 1-2 expect statements** - Keep tests focused and simple
+- Use factories when necessary to avoid duplication
+- Features should be testable in isolation
+- Mock API calls in tests
+- Test hooks independently from components
+- Use TypeScript for compile-time safety
+
+## Documentation
+
+- Keep README files updated in feature directories
+- **Code should be self-documenting** - Use clear, descriptive names instead of comments
+- **NO COMMENTS** - Never add comments to code, including JSDoc
+- Let the code speak for itself through clear naming and structure

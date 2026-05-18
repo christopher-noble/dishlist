@@ -1,0 +1,39 @@
+name: Hive Schema Management
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  hive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Hive CLI
+        run: curl -sSL https://graphql-hive.com/install.sh | sh
+
+      # 1. Open PR and publish to Hive staging
+      - name: Check Schema (PR Only)
+        if: github.event_name == 'pull_request'
+        run: |
+          hive schema:check \
+            --registry.accessToken "${{ secrets.HIVE_TOKEN }}" \
+            --name user-service \
+            --target "production" \
+            ./src/application/schemas/*.graphql
+
+      # 2. Merge to master and publish to Hive production
+      - name: Publish Schema (Merge Only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          hive schema:publish \
+            --registry.accessToken "${{ secrets.HIVE_TOKEN }}" \
+            --name user-service \
+            --target "production" \
+            --url "https://your-production-url.com/graphql" \
+            ./src/application/schemas/*.graphql

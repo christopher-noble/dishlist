@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MealCategory {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  DESSERT
+  BEVERAGE
+}
+
+model Meal {
+  id              String       @id @db.Uuid
+  userId          String       @map("user_id") @db.Uuid
+  name            String
+  description     String
+  imageUrl        String?      @map("image_url")
+  category        MealCategory
+  ingredients     String[]     @db.Text
+  nutritionalInfo Json?        @map("nutritional_info")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  archivedAt      DateTime?    @map("archived_at")
+  deletedAt       DateTime?    @map("deleted_at")
+
+  @@map("meals")
+}

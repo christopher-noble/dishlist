@@ -1,0 +1,4 @@
+packages:
+  - 'packages/frontend'
+  - 'packages/meal-service'
+  - 'packages/user-service'

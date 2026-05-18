@@ -1,0 +1,17 @@
+mutation CreateMeal($input: CreateMealInput!) {
+  createMeal(input: $input) {
+    ...MealFields
+  }
+}
+
+mutation UpdateMeal($id: ID!, $input: UpdateMealInput!) {
+  updateMeal(id: $id, input: $input) {
+    ...MealFields
+  }
+}
+
+mutation ArchiveMeal($id: ID!) {
+  archiveMeal(id: $id) {
+    ...MealFields
+  }
+}
