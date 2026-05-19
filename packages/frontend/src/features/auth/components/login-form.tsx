@@ -14,6 +14,7 @@ import { ApiError } from '@/src/shared/api/client';
 
 const c = Theme.colors;
 
+import { APP_HOME_HREF } from '../constants/routes';
 import { useAuth } from '../context/auth-context';
 import { AuthScreenLayout } from './auth-screen-layout';
 import { AuthTextField } from './auth-text-field';
@@ -36,7 +37,7 @@ export function LoginForm() {
 
     try {
       await signIn({ email: email.trim(), password });
-      router.replace('/');
+      router.replace(APP_HOME_HREF);
     } catch (submitError) {
       const message =
         submitError instanceof ApiError
@@ -51,7 +52,7 @@ export function LoginForm() {
   return (
     <AuthScreenLayout
       title="Welcome back"
-      subtitle="Sign in to manage your meals and recipes."
+      subtitle="Sign in to manage your recipes."
       footer={
         <View style={styles.footerRow}>
           <Text style={styles.footerText}>New here? </Text>
@@ -66,8 +67,7 @@ export function LoginForm() {
         value={email}
         onChangeText={setEmail}
         placeholder="you@example.com"
-        keyboardType="email-address"
-        textContentType="emailAddress"
+        autoComplete="email"
         returnKeyType="next"
         blurOnSubmit={false}
         onSubmitEditing={() => passwordRef.current?.focus()}

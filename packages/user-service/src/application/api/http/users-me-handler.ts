@@ -1,7 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { fromNodeHeaders } from 'better-auth/node';
 
-import { auth } from '../../../infrastructure/auth/better-auth.js';
+import { getSessionFromNodeRequest } from '../../../infrastructure/auth/get-session-from-node-request.js';
 import { resolveUserProfileForAuthUser } from '../../../infrastructure/auth/resolve-user-profile.js';
 
 export async function handleUsersMe(
@@ -15,9 +14,7 @@ export async function handleUsersMe(
     return;
   }
 
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  });
+  const session = await getSessionFromNodeRequest(req);
 
   if (!session?.user) {
     res.statusCode = 401;

@@ -1,6 +1,6 @@
 # Dishlist Mobile Client
 
-Track your meals, discover new dishes, and never think about dinner again.
+Track your recipes, discover new dishes, and never think about dinner again.
 
 This is a React Native mobile application built with Expo, serving both Android and iOS platforms.
 

@@ -41,7 +41,8 @@ export function AuthScreenLayout({
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="always"
+          keyboardDismissMode="on-drag"
         >
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>

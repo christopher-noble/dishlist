@@ -18,7 +18,7 @@ type AuthTextFieldProps = {
   placeholder?: string;
   secureTextEntry?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
-  keyboardType?: 'default' | 'email-address';
+  keyboardType?: TextInputProps['keyboardType'];
   /** Use for email/name fields only. Password fields set autofill props internally. */
   textContentType?: TextInputProps['textContentType'];
   /** `current-password` for sign-in, `new-password` for sign-up. */
@@ -29,6 +29,20 @@ type AuthTextFieldProps = {
   enablesReturnKeyAutomatically?: boolean;
 };
 
+function isEmailField(
+  keyboardType: TextInputProps['keyboardType'],
+  textContentType: TextInputProps['textContentType'],
+  autoComplete: TextInputProps['autoComplete'] | undefined,
+): boolean {
+  return (
+    keyboardType === 'email-address' ||
+    textContentType === 'emailAddress' ||
+    textContentType === 'username' ||
+    autoComplete === 'email' ||
+    autoComplete === 'username'
+  );
+}
+
 export const AuthTextField = forwardRef<TextInput, AuthTextFieldProps>(
   function AuthTextField(
     {
@@ -37,7 +51,6 @@ export const AuthTextField = forwardRef<TextInput, AuthTextFieldProps>(
       onChangeText,
       placeholder,
       secureTextEntry,
-      autoCapitalize = 'none',
       keyboardType = 'default',
       textContentType = 'none',
       autoComplete,
@@ -48,7 +61,24 @@ export const AuthTextField = forwardRef<TextInput, AuthTextFieldProps>(
     },
     ref,
   ) {
-    const resolvedTextContentType = secureTextEntry ? 'none' : textContentType;
+    const emailField = isEmailField(keyboardType, textContentType, autoComplete);
+
+    const resolvedKeyboardType: TextInputProps['keyboardType'] = secureTextEntry
+      ? Platform.OS === 'ios'
+        ? 'ascii-capable'
+        : 'default'
+      : emailField
+        ? 'default'
+        : keyboardType;
+
+    const resolvedTextContentType: TextInputProps['textContentType'] =
+      secureTextEntry
+        ? autoComplete === 'new-password'
+          ? 'newPassword'
+          : 'password'
+        : emailField
+          ? 'none'
+          : textContentType;
 
     const handleKeyPress: TextInputProps['onKeyPress'] = (event) => {
       if (
@@ -70,8 +100,8 @@ export const AuthTextField = forwardRef<TextInput, AuthTextFieldProps>(
           placeholder={placeholder}
           placeholderTextColor={c.placeholder}
           secureTextEntry={secureTextEntry}
-          autoCapitalize={autoCapitalize}
-          keyboardType={keyboardType}
+          autoCapitalize="none"
+          keyboardType={resolvedKeyboardType}
           textContentType={resolvedTextContentType}
           autoComplete={autoComplete}
           autoCorrect={false}
@@ -81,10 +111,8 @@ export const AuthTextField = forwardRef<TextInput, AuthTextFieldProps>(
           onSubmitEditing={onSubmitEditing}
           onKeyPress={handleKeyPress}
           enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
-          importantForAutofill={secureTextEntry ? 'no' : 'auto'}
-          {...(Platform.OS === 'ios' && secureTextEntry
-            ? { passwordRules: undefined }
-            : {})}
+          contextMenuHidden={false}
+          importantForAutofill="auto"
           style={styles.input}
         />
       </View>

@@ -26,7 +26,7 @@ export default function AppLayout() {
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="meal/[id]"
+        name="recipe/[id]"
         options={{
           headerShown: false,
           presentation: 'card',
@@ -34,7 +34,23 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
-        name="meal/add"
+        name="recipe/add"
+        options={{
+          headerShown: false,
+          presentation: 'card',
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="recipe/edit/[id]"
+        options={{
+          headerShown: false,
+          presentation: 'card',
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="recipe/archived"
         options={{
           headerShown: false,
           presentation: 'card',

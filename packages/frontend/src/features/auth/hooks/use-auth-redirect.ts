@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
+import { APP_HOME_HREF } from '../constants/routes';
 import { useAuth } from '../context/auth-context';
 
 /**
@@ -12,7 +13,7 @@ export function useAuthRedirect(): void {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.replace('/');
+      router.replace(APP_HOME_HREF);
     }
   }, [isAuthenticated, isLoading, router]);
 }

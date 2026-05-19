@@ -9,12 +9,15 @@ import React, {
 
 import {
   authApiClient,
-  getSessionUser,
   type AuthSession,
   type SignInInput,
   type SignUpInput,
   type User,
 } from '../api/auth-api-client';
+import {
+  clearAccessToken,
+  synchronizeAccessTokenWithSession,
+} from '../services/auth-session.service';
 
 type AuthContextValue = {
   session: AuthSession | null;
@@ -37,9 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshSession = useCallback(async () => {
     try {
       const nextSession = await authApiClient.getSession();
-      if (nextSession) {
-        setSession(nextSession);
-      }
+      setSession(nextSession);
     } catch {
       setSession(null);
     }
@@ -47,32 +48,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const profile = await authApiClient.getCurrentUser();
       setUser(profile?.user ?? null);
+
+      if (profile?.user) {
+        await synchronizeAccessTokenWithSession();
+      } else {
+        clearAccessToken();
+      }
     } catch {
       setUser(null);
+      clearAccessToken();
     }
   }, []);
 
   const establishSession = useCallback(async (initialSession: AuthSession) => {
     setSession(initialSession);
 
-    let profile = await authApiClient.getCurrentUser();
-    if (profile?.user) {
-      setUser(profile.user);
-      return;
+    const profile = await authApiClient.getCurrentUser();
+    if (!profile?.user) {
+      throw new Error('Unable to load your profile');
     }
 
-    const nextSession = await authApiClient.getSession();
-    if (nextSession) {
-      setSession(nextSession);
-    }
+    setUser(profile.user);
 
-    profile = await authApiClient.getCurrentUser();
-    if (profile?.user) {
-      setUser(profile.user);
-      return;
+    const hasAccessToken = await synchronizeAccessTokenWithSession();
+    if (!hasAccessToken) {
+      throw new Error('Unable to issue access token');
     }
-
-    throw new Error('Unable to load your profile');
   }, []);
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     await authApiClient.signOut();
+    clearAccessToken();
     setSession(null);
     setUser(null);
   }, []);
@@ -120,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       session,
       user,
       isLoading,
-      isAuthenticated: Boolean(getSessionUser(session) && user),
+      isAuthenticated: Boolean(user),
       signIn,
       signUp,
       signOut,

@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 
+import { LOGIN_HREF } from '../constants/routes';
 import { useAuth } from '../context/auth-context';
 
 type UseLogoutActionOptions = {
@@ -19,7 +20,7 @@ export function useLogoutAction({
     setIsSubmitting(true);
     try {
       await signOut();
-      router.replace('/login');
+      router.replace(LOGIN_HREF);
     } finally {
       setIsSubmitting(false);
     }
@@ -36,7 +37,7 @@ export function useLogoutAction({
     }
 
     const title = 'Log out?';
-    const message = 'You will need to sign in again to access your meals.';
+    const message = 'You will need to sign in again to access your recipes.';
 
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       if (window.confirm(`${title}\n\n${message}`)) {

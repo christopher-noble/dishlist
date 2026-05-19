@@ -1,6 +1,7 @@
 import { useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 
+import { APP_HOME_HREF, LOGIN_HREF } from '../constants/routes';
 import { useAuth } from '../context/auth-context';
 
 /**
@@ -22,12 +23,12 @@ export function useRequireAuth(): {
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/login');
+      router.replace(LOGIN_HREF);
       return;
     }
 
     if (isAuthenticated && inAuthGroup) {
-      router.replace('/');
+      router.replace(APP_HOME_HREF);
     }
   }, [isAuthenticated, isLoading, router, segments]);
 

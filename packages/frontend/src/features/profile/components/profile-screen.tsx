@@ -1,11 +1,16 @@
-import { LogoutButton, useAuth, useRequireAuth } from '@/src/features/auth';
+import { LogoutButton } from '@/src/features/auth/components/logout-button';
+import { useAuth } from '@/src/features/auth/context/auth-context';
+import { useRequireAuth } from '@/src/features/auth/hooks/use-require-auth';
+import { useRecipeStats } from '@/src/features/recipes';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Theme } from '@/constants/theme';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,6 +29,33 @@ function getInitials(firstName: string, lastName: string): string {
     return `${first}${last}`.toUpperCase();
   }
   return (first || last || '?').toUpperCase();
+}
+
+function StatCard({
+  label,
+  value,
+  onPress,
+}: {
+  label: string;
+  value: number;
+  onPress?: () => void;
+}) {
+  const content = (
+    <>
+      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </>
+  );
+
+  if (onPress) {
+    return (
+      <Pressable onPress={onPress} style={styles.statCard}>
+        {content}
+      </Pressable>
+    );
+  }
+
+  return <View style={styles.statCard}>{content}</View>;
 }
 
 function ProfileField({
@@ -51,7 +83,9 @@ function ProfileField({
 export function ProfileScreen() {
   const { isLoading } = useRequireAuth();
   const { user } = useAuth();
+  const { data: statsData, loading: statsLoading } = useRecipeStats();
   const insets = useSafeAreaInsets();
+  const stats = statsData?.recipeStats;
 
   const displayName = useMemo(() => {
     if (!user) {
@@ -105,6 +139,21 @@ export function ProfileScreen() {
               </Text>
             </Animated.View>
           </LinearGradient>
+
+          <View style={styles.statsRow}>
+            <StatCard
+              label="Active recipes"
+              value={stats?.activeRecipeCount ?? 0}
+            />
+            <StatCard
+              label="Removed (30 days)"
+              value={stats?.archivedLast30DaysCount ?? 0}
+              onPress={() => router.push('/recipe/archived')}
+            />
+          </View>
+          {statsLoading ? (
+            <ActivityIndicator size="small" color={c.primary} style={styles.statsLoading} />
+          ) : null}
 
           <View style={styles.card}>
             <ProfileField icon="person.fill" label="Name" value={displayName} />
@@ -193,8 +242,40 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.88)',
     maxWidth: '100%',
   },
-  card: {
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
     marginTop: -12,
+    marginHorizontal: 20,
+    marginBottom: 16,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: c.surface,
+    borderRadius: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: c.borderNeutral,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: c.text,
+  },
+  statLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: c.textSecondary,
+    textAlign: 'center',
+    marginTop: 6,
+  },
+  statsLoading: {
+    marginBottom: 12,
+  },
+  card: {
+    marginTop: 0,
     marginHorizontal: 20,
     backgroundColor: c.surface,
     borderRadius: 20,

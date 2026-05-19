@@ -1,27 +1,16 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
+import { appConfig } from '../../../../config/config.default.js';
+
 const DEFAULT_ALLOWED_HEADERS =
   'Content-Type, Authorization, Cookie, X-Requested-With';
-
-function parseAllowedOrigins(): string[] {
-  return (
-    process.env.AUTH_TRUSTED_ORIGINS?.split(',')
-      .map((origin) => origin.trim())
-      .filter(Boolean) ?? [
-      'http://localhost:8081',
-      'http://localhost:19006',
-      'http://127.0.0.1:8081',
-      'http://127.0.0.1:19006',
-    ]
-  );
-}
 
 export function applyCors(
   req: IncomingMessage,
   res: ServerResponse,
 ): { isPreflight: boolean } {
   const requestOrigin = req.headers.origin;
-  const allowedOrigins = parseAllowedOrigins();
+  const allowedOrigins = appConfig.cors.trustedOrigins;
   const isAllowedOrigin =
     requestOrigin &&
     allowedOrigins.some(
@@ -45,6 +34,7 @@ export function applyCors(
     req.headers['access-control-request-headers'] ?? DEFAULT_ALLOWED_HEADERS,
   );
   res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Access-Control-Expose-Headers', 'set-auth-token');
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;

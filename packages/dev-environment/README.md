@@ -28,7 +28,7 @@ From the **repository root** (`dishlist/`):
 
    ```bash
    pnpm user-service:dev
-   pnpm meal-service:dev
+   pnpm recipe-service:dev
    pnpm frontend:start
    ```
 

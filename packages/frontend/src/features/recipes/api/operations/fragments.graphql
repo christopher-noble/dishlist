@@ -1,0 +1,21 @@
+fragment RecipeFields on Recipe {
+  id
+  name
+  description
+  imageKey
+  category
+  ingredients {
+    item
+    amount
+    unit
+  }
+  steps
+  servesCount
+  nutritionalInfo {
+    calories
+    protein
+    carbs
+    fat
+    fiber
+  }
+}

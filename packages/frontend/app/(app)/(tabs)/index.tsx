@@ -1,8 +1,8 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Theme } from '@/constants/theme';
 import { useRequireAuth } from '@/src/features/auth';
-import { MealList } from '@/src/features/meals';
-import type { Meal } from '@/src/shared/api/generated/graphql';
+import { RecipeList } from '@/src/features/recipes';
+import type { Recipe } from '@/src/shared/api/generated/graphql';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -13,11 +13,11 @@ const MAX_WIDTH_WEB = 1200;
 const c = Theme.colors;
 
 export default function HomeScreen() {
-  const { userId } = useRequireAuth();
+  useRequireAuth();
   const [addHovered, setAddHovered] = useState(false);
 
-  const handleMealPress = (meal: Meal) => {
-    router.push({ pathname: '/meal/[id]', params: { id: meal.id, mealData: JSON.stringify(meal) } });
+  const handleRecipePress = (recipe: Recipe) => {
+    router.push({ pathname: '/recipe/[id]', params: { id: recipe.id, recipeData: JSON.stringify(recipe) } });
   };
 
   return (
@@ -25,11 +25,11 @@ export default function HomeScreen() {
       <View style={styles.headerWrapper}>
         <Animated.View entering={FadeInDown.delay(100).springify()} style={styles.header}>
           <Animated.Text entering={FadeInRight.delay(300).springify()} style={styles.title}>
-            Meals
+            Recipes
           </Animated.Text>
           <Animated.View entering={FadeInRight.delay(400).springify()}>
             <Pressable
-              onPress={() => router.push('/meal/add')}
+              onPress={() => router.push('/recipe/add')}
               onHoverIn={() => setAddHovered(true)}
               onHoverOut={() => setAddHovered(false)}
               style={[styles.addButton, addHovered && styles.addButtonHovered]}
@@ -39,9 +39,7 @@ export default function HomeScreen() {
           </Animated.View>
         </Animated.View>
       </View>
-      {userId ? (
-        <MealList userId={userId} onMealPress={handleMealPress} />
-      ) : null}
+      <RecipeList onRecipePress={handleRecipePress} />
     </SafeAreaView>
   );
 }

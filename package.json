@@ -7,7 +7,7 @@
     "dev:deps": "docker-compose -f packages/dev-environment/docker-compose.yml up",
     "dev:deps:detached": "docker-compose -f packages/dev-environment/docker-compose.yml up -d",
     "user-service:dev": "pnpm --filter user-service start:dev",
-    "meal-service:dev": "pnpm --filter meal-service start:dev",
+    "recipe-service:dev": "pnpm --filter recipe-service start:dev",
     "frontend:start": "pnpm --filter frontend start",
     "frontend:ios": "pnpm --filter frontend ios",
     "frontend:codegen": "pnpm --filter frontend codegen"

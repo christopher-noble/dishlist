@@ -1,0 +1,116 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.6"
+    import: ["@key"]
+  )
+
+type Query {
+  recipes: [Recipe!]!
+  archivedRecipes: [Recipe!]!
+  recipe(id: ID!): Recipe
+  recipeStats: RecipeStats!
+  recipeCreateOptions: RecipeCreateOptions!
+}
+
+type Mutation {
+  createRecipe(input: CreateRecipeInput!): Recipe!
+  updateRecipe(id: ID!, input: UpdateRecipeInput!): Recipe!
+  archiveRecipe(id: ID!): Recipe!
+  recoverRecipe(id: ID!): Recipe!
+  deleteRecipe(id: ID!): Boolean!
+  deleteAllArchivedRecipes: Int!
+  getRecipeUploadTarget(fileName: String!, fileType: String!): UploadTargetResponse!
+}
+
+enum RecipeCategory {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  DESSERT
+  BEVERAGE
+}
+
+type RecipeIngredient {
+  item: String!
+  amount: Float!
+  unit: String!
+}
+
+type IngredientUnitOption {
+  value: String!
+  singularLabel: String!
+  pluralLabel: String!
+}
+
+type RecipeCreateOptions {
+  maxServes: Int!
+  categories: [RecipeCategory!]!
+  ingredientUnits: [IngredientUnitOption!]!
+}
+
+type Recipe {
+  id: ID!
+  name: String!
+  description: String!
+  imageKey: String
+  category: RecipeCategory!
+  ingredients: [RecipeIngredient!]!
+  steps: [String!]!
+  servesCount: Int
+  nutritionalInfo: NutritionalInfo
+}
+
+type RecipeStats {
+  activeRecipeCount: Int!
+  archivedLast30DaysCount: Int!
+}
+
+type NutritionalInfo {
+  calories: Int
+  protein: Float
+  carbs: Float
+  fat: Float
+  fiber: Float
+}
+
+type UploadTargetResponse {
+  uploadUrl: String!
+  imageKey: String!
+}
+
+input CreateRecipeInput {
+  name: String!
+  description: String!
+  imageKey: String
+  category: RecipeCategory!
+  ingredients: [RecipeIngredientInput!]!
+  steps: [String!]!
+  servesCount: Int
+  nutritionalInfo: NutritionalInfoInput
+}
+
+input RecipeIngredientInput {
+  item: String!
+  amount: Float!
+  unit: String!
+}
+
+input UpdateRecipeInput {
+  name: String
+  description: String
+  imageKey: String
+  category: RecipeCategory
+  ingredients: [RecipeIngredientInput!]
+  steps: [String!]
+  servesCount: Int
+  nutritionalInfo: NutritionalInfoInput
+}
+
+input NutritionalInfoInput {
+  calories: Int
+  protein: Float
+  carbs: Float
+  fat: Float
+  fiber: Float
+}

@@ -11,7 +11,7 @@ This is a React Native app using Expo Router with a feature-based architecture p
 ## Directory Structure
 ```
 src/
-├── features/          # Business features (meals, orders, users, etc.)
+├── features/          # Business features (recipes, orders, users, etc.)
 │   └── [feature-name]/
 │       ├── api/       # API calls specific to feature
 │       ├── components/ # Feature-specific components
@@ -71,9 +71,9 @@ test/                  # Test files mirror src/ structure
 - Use TypeScript types for request/response payloads
 
 ### File Naming
-- Use kebab-case for file names: `meal-card.tsx`, `use-meals.ts`
-- Use PascalCase for component names: `MealCard`, `MealList`
-- Use camelCase for hook names: `useMeals`, `useCreateMeal`
+- Use kebab-case for file names: `recipe-card.tsx`, `use-recipes.ts`
+- Use PascalCase for component names: `RecipeCard`, `RecipeList`
+- Use camelCase for hook names: `useRecipes`, `useCreateRecipe`
 - Use camelCase for utility functions: `formatPrice`, `getCategoryDisplayName`
 
 ### Import Organization
@@ -152,7 +152,7 @@ test/                  # Test files mirror src/ structure
 1. Create directory: `src/features/[feature-name]/`
 2. Set up structure: `api/`, `components/`, `hooks/`, `types/`, `utils/`
 3. Create `index.ts` with public exports
-4. Follow existing patterns from `meals` feature
+4. Follow existing patterns from `recipes` feature
 5. Document the feature in its README if complex
 
 ## When Modifying Code

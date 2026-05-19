@@ -4,10 +4,12 @@ import { config as staging } from './config.staging.js';
 
 const env = (process.env.NODE_ENV ?? 'development').toLowerCase();
 
-const configs: Record<string, { dbUrl: string }> = {
+const configs = {
   development,
   staging,
   production,
-};
+} as const;
 
-export const appConfig = configs[env] ?? development;
+export const appConfig = configs[env as keyof typeof configs] ?? development;
+
+export type AppConfig = typeof development;

@@ -1,0 +1,11 @@
+query RecipeCreateOptions {
+  recipeCreateOptions {
+    maxServes
+    categories
+    ingredientUnits {
+      value
+      singularLabel
+      pluralLabel
+    }
+  }
+}

@@ -7,10 +7,9 @@ Monorepo for the Dishlist app: GraphQL subgraph services, Expo frontend, and loc
 | Path | Description |
 |------|-------------|
 | `packages/frontend` | Expo / React Native app |
-| `packages/backend/user-service` | Users subgraph (GraphQL + Prisma) |
-| `packages/backend/meal-service` | Meals subgraph (GraphQL + Prisma) |
-| `packages/backend/dev-environment` | Docker Compose (Postgres) for local development |
-| `packages/backend/notification-service` | Notification service (placeholder) |
+| `packages/user-service` | Users subgraph (GraphQL + Prisma) |
+| `packages/recipe-service` | Recipes subgraph (GraphQL + Prisma) |
+| `packages/dev-environment` | Docker Compose (Postgres) for local development |
 
 ## Prerequisites
 
@@ -38,7 +37,7 @@ In separate terminals:
 
 ```bash
 pnpm user-service:dev
-pnpm meal-service:dev
+pnpm recipe-service:dev
 pnpm frontend:start
 ```
 
@@ -49,14 +48,14 @@ pnpm frontend:start
 | `pnpm install -r` | Install dependencies for all packages (per-package lockfiles) |
 | `pnpm dev:deps` | Start Postgres via Docker Compose |
 | `pnpm user-service:dev` | Run user-service with watch |
-| `pnpm meal-service:dev` | Run meal-service with watch |
+| `pnpm recipe-service:dev` | Run recipe-service with watch |
 | `pnpm frontend:start` | Start Expo dev server |
 | `pnpm frontend:codegen` | Regenerate GraphQL types for the frontend |
 
 Run any package script with filters:
 
 ```bash
-pnpm --filter meal-service test
+pnpm --filter recipe-service test
 pnpm --filter frontend ios
 ```
 

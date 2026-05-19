@@ -14,6 +14,7 @@ import { ApiError } from '@/src/shared/api/client';
 
 const c = Theme.colors;
 
+import { APP_HOME_HREF, LOGIN_HREF } from '../constants/routes';
 import { useAuth } from '../context/auth-context';
 import { AuthScreenLayout } from './auth-screen-layout';
 import { AuthTextField } from './auth-text-field';
@@ -46,7 +47,7 @@ export function RegisterForm() {
         email: email.trim(),
         password,
       });
-      router.replace('/');
+      router.replace(APP_HOME_HREF);
     } catch (submitError) {
       const message =
         submitError instanceof ApiError
@@ -62,11 +63,11 @@ export function RegisterForm() {
     <AuthScreenLayout
       title="Create account"
       subtitle="Register to start building your dish list."
-      onBack={() => router.replace('/login')}
+      onBack={() => router.replace(LOGIN_HREF)}
       footer={
         <View style={styles.footerRow}>
           <Text style={styles.footerText}>Already have an account? </Text>
-          <Pressable onPress={() => router.replace('/login')}>
+          <Pressable onPress={() => router.replace(LOGIN_HREF)}>
             <Text style={styles.link}>Sign in</Text>
           </Pressable>
         </View>
@@ -77,7 +78,7 @@ export function RegisterForm() {
         value={firstName}
         onChangeText={setFirstName}
         placeholder="Alex"
-        autoCapitalize="words"
+        autoComplete="given-name"
         textContentType="givenName"
         returnKeyType="next"
         blurOnSubmit={false}
@@ -89,7 +90,7 @@ export function RegisterForm() {
         value={lastName}
         onChangeText={setLastName}
         placeholder="Rivera"
-        autoCapitalize="words"
+        autoComplete="family-name"
         textContentType="familyName"
         returnKeyType="next"
         blurOnSubmit={false}
@@ -101,8 +102,7 @@ export function RegisterForm() {
         value={email}
         onChangeText={setEmail}
         placeholder="you@example.com"
-        keyboardType="email-address"
-        textContentType="emailAddress"
+        autoComplete="email"
         returnKeyType="next"
         blurOnSubmit={false}
         onSubmitEditing={() => passwordRef.current?.focus()}

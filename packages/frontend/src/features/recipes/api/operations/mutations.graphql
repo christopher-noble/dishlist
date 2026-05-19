@@ -1,0 +1,38 @@
+mutation CreateRecipe($input: CreateRecipeInput!) {
+  createRecipe(input: $input) {
+    ...RecipeFields
+  }
+}
+
+mutation UpdateRecipe($id: ID!, $input: UpdateRecipeInput!) {
+  updateRecipe(id: $id, input: $input) {
+    ...RecipeFields
+  }
+}
+
+mutation ArchiveRecipe($id: ID!) {
+  archiveRecipe(id: $id) {
+    ...RecipeFields
+  }
+}
+
+mutation RecoverRecipe($id: ID!) {
+  recoverRecipe(id: $id) {
+    ...RecipeFields
+  }
+}
+
+mutation DeleteRecipe($id: ID!) {
+  deleteRecipe(id: $id)
+}
+
+mutation DeleteAllArchivedRecipes {
+  deleteAllArchivedRecipes
+}
+
+mutation GetRecipeUploadTarget($fileName: String!, $fileType: String!) {
+  getRecipeUploadTarget(fileName: $fileName, fileType: $fileType) {
+    uploadUrl
+    imageKey
+  }
+}
