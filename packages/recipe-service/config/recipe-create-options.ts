@@ -9,14 +9,14 @@ export const RECIPE_CREATE_OPTIONS = {
     'BEVERAGE',
   ] as const,
   ingredientUnits: [
-    { value: 'ML', singularLabel: 'ML', pluralLabel: 'ML' },
+    { value: 'ML', singularLabel: 'ml', pluralLabel: 'ml' },
     { value: 'L', singularLabel: 'L', pluralLabel: 'L' },
-    { value: 'G', singularLabel: 'G', pluralLabel: 'G' },
-    { value: 'KG', singularLabel: 'KG', pluralLabel: 'KG' },
-    { value: 'CUP', singularLabel: 'CUP', pluralLabel: 'CUPS' },
-    { value: 'LB', singularLabel: 'LB', pluralLabel: 'LB' },
-    { value: 'TBSP', singularLabel: 'TBSP', pluralLabel: 'TBSP' },
-    { value: 'TSP', singularLabel: 'TSP', pluralLabel: 'TSP' },
+    { value: 'G', singularLabel: 'g', pluralLabel: 'g' },
+    { value: 'KG', singularLabel: 'kg', pluralLabel: 'kg' },
+    { value: 'CUP', singularLabel: 'cup', pluralLabel: 'cups' },
+    { value: 'LB', singularLabel: 'lb', pluralLabel: 'lb' },
+    { value: 'TBSP', singularLabel: 'tbsp', pluralLabel: 'tbsp' },
+    { value: 'TSP', singularLabel: 'tsp', pluralLabel: 'tsp' },
   ],
 } as const;
 

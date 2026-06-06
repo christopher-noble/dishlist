@@ -1,6 +1,7 @@
 export { RecipeCard } from './components/recipe-card';
 export { RecipeList } from './components/recipe-list';
 export { IngredientFormRow, EMPTY_INGREDIENT_DRAFT } from './components/ingredient-form-row';
+export { StepFormRow } from './components/step-form-row';
 export { UnitDropdown } from './components/unit-dropdown';
 export type { IngredientDraft } from './components/ingredient-form-row';
 export { ExpandableIngredientChip } from './components/expandable-ingredient-chip';

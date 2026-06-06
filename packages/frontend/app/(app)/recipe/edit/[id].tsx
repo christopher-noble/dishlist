@@ -5,6 +5,7 @@ import { useRequireAuth } from '@/src/features/auth';
 import {
   EMPTY_INGREDIENT_DRAFT,
   IngredientFormRow,
+  StepFormRow,
   normalizeRecipeName,
   requestPhotoLibraryAccess,
   uploadRecipeImage,
@@ -15,6 +16,10 @@ import {
   recipeIngredientsToDrafts,
   type IngredientDraft,
 } from '@/src/features/recipes';
+import {
+  FORM_LAYOUT_TRANSITION,
+  FORM_ROW_EXITING,
+} from '@/src/features/recipes/components/ingredient-form-animations';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import type { RecipeCategory } from '@/src/shared/api/generated/graphql';
@@ -63,7 +68,7 @@ export default function EditRecipeScreen() {
   const [ingredients, setIngredients] = useState<IngredientDraft[]>([
     { ...EMPTY_INGREDIENT_DRAFT },
   ]);
-  const [steps, setSteps] = useState<string[]>([]);
+  const [steps, setSteps] = useState<string[]>(['']);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [existingImageUri, setExistingImageUri] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
@@ -90,7 +95,7 @@ export default function EditRecipeScreen() {
       servesCount: recipe.servesCount ?? 1,
     });
     setIngredients(recipeIngredientsToDrafts(recipe.ingredients));
-    setSteps(recipe.steps ?? []);
+    setSteps(recipe.steps?.length ? recipe.steps : ['']);
     setExistingImageUri(recipe.imageKey);
     setInitialized(true);
   }, [recipe, initialized]);
@@ -178,7 +183,6 @@ export default function EditRecipeScreen() {
     const validIngredients = draftsToRecipeIngredients(ingredients);
     const validSteps = steps.filter((s) => s.trim());
     if (!form.name.trim() || !validIngredients.length) return;
-    if (steps.length && !validSteps.length) return;
 
     try {
       setImageError(null);
@@ -219,9 +223,7 @@ export default function EditRecipeScreen() {
   };
 
   const isValid =
-    form.name.trim() &&
-    draftsToRecipeIngredients(ingredients).length > 0 &&
-    (!steps.length || steps.some((s) => s.trim()));
+    form.name.trim() && draftsToRecipeIngredients(ingredients).length > 0;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -304,61 +306,84 @@ export default function EditRecipeScreen() {
                 </View>
               </Animated.View>
 
-              <Animated.View entering={FadeInDown.delay(500).springify()} style={styles.section}>
+              <Animated.View
+                entering={FadeInDown.delay(500).springify()}
+                layout={FORM_LAYOUT_TRANSITION}
+                style={styles.section}
+              >
                 <Text style={styles.label}>Ingredients</Text>
                 {ingredients.map((ingredient, index) => (
-                  <IngredientFormRow
+                  <Animated.View
                     key={index}
-                    ingredient={ingredient}
-                    units={unitOptions}
-                    canRemove={ingredients.length > 1}
-                    itemRef={(ref) => {
-                      ingredientRefs.current[index] = ref;
-                    }}
-                    onItemChange={(text) => updateIngredient(index, { item: text })}
-                    onAmountChange={(text) => updateIngredient(index, { amount: text })}
-                    onUnitChange={(unit) => updateIngredient(index, { unit })}
-                    onRemove={() => removeIngredient(index)}
-                    onSubmitItem={() =>
-                      index < ingredients.length - 1
-                        ? ingredientRefs.current[index + 1]?.focus()
-                        : addIngredient()
-                    }
-                  />
+                    layout={FORM_LAYOUT_TRANSITION}
+                    exiting={FORM_ROW_EXITING}
+                  >
+                    <IngredientFormRow
+                      ingredient={ingredient}
+                      units={unitOptions}
+                      canRemove={ingredients.length > 1}
+                      itemRef={(ref) => {
+                        ingredientRefs.current[index] = ref;
+                      }}
+                      onItemChange={(text) => updateIngredient(index, { item: text })}
+                      onAmountChange={(text) => updateIngredient(index, { amount: text })}
+                      onUnitChange={(unit) => updateIngredient(index, { unit })}
+                      onRemove={() => removeIngredient(index)}
+                      onSubmitItem={() =>
+                        index < ingredients.length - 1
+                          ? ingredientRefs.current[index + 1]?.focus()
+                          : addIngredient()
+                      }
+                    />
+                  </Animated.View>
                 ))}
-                <Pressable onPress={addIngredient} style={styles.addButton}>
-                  <Text style={styles.addButtonText}>+ Add Ingredient</Text>
-                </Pressable>
+                <Animated.View layout={FORM_LAYOUT_TRANSITION}>
+                  <Pressable onPress={addIngredient} style={styles.addButton}>
+                    <Text style={styles.addButtonText}>+ Add Ingredient</Text>
+                  </Pressable>
+                </Animated.View>
               </Animated.View>
 
-              <Animated.View entering={FadeInDown.delay(600).springify()} style={styles.section}>
+              <Animated.View
+                entering={FadeInDown.delay(600).springify()}
+                layout={FORM_LAYOUT_TRANSITION}
+                style={styles.section}
+              >
                 <Text style={styles.label}>Steps</Text>
                 {steps.map((step, index) => (
-                  <View key={index} style={styles.row}>
-                    <View style={styles.stepNumber}>
-                      <Text style={styles.stepNumberText}>{index + 1}</Text>
-                    </View>
-                    <TextInput
-                      ref={(ref) => { stepRefs.current[index] = ref; }}
-                      style={[styles.input, styles.flex]}
-                      placeholder={`Step ${index + 1}`}
-                      placeholderTextColor={c.placeholder}
+                  <Animated.View
+                    key={index}
+                    layout={FORM_LAYOUT_TRANSITION}
+                    exiting={FORM_ROW_EXITING}
+                  >
+                    <StepFormRow
+                      stepNumber={index + 1}
                       value={step}
-                      onChangeText={(text) => updateStep(index, text)}
-                      onSubmitEditing={() => index < steps.length - 1 ? stepRefs.current[index + 1]?.focus() : addStep()}
-                      returnKeyType="next"
+                      inputRef={(ref) => {
+                        stepRefs.current[index] = ref;
+                      }}
+                      onChange={(text) => updateStep(index, text)}
+                      onRemove={() => removeStep(index)}
+                      onSubmitEditing={() =>
+                        index < steps.length - 1
+                          ? stepRefs.current[index + 1]?.focus()
+                          : addStep()
+                      }
                     />
-                    <Pressable onPress={() => removeStep(index)} style={styles.removeButton}>
-                      <Text style={styles.removeText}>×</Text>
-                    </Pressable>
-                  </View>
+                  </Animated.View>
                 ))}
-                <Pressable onPress={addStep} style={styles.addButton}>
-                  <Text style={styles.addButtonText}>+ Add Step</Text>
-                </Pressable>
+                <Animated.View layout={FORM_LAYOUT_TRANSITION}>
+                  <Pressable onPress={addStep} style={styles.addButton}>
+                    <Text style={styles.addButtonText}>+ Add Step</Text>
+                  </Pressable>
+                </Animated.View>
               </Animated.View>
 
-              <Animated.View entering={FadeInDown.delay(700).springify()} style={styles.section}>
+              <Animated.View
+                entering={FadeInDown.delay(700).springify()}
+                layout={FORM_LAYOUT_TRANSITION}
+                style={styles.section}
+              >
                 <Text style={styles.label}>Serves</Text>
                 <View style={styles.stepper}>
                   <Pressable
