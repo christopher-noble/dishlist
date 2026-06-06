@@ -23,6 +23,9 @@ Monorepo for the Dishlist app: GraphQL subgraph services, Expo frontend, and loc
 git clone git@github.com:YOUR_ORG/dishlist.git
 cd dishlist
 
+# Run colima
+colima start
+
 # Install all workspace dependencies (each package keeps its own pnpm-lock.yaml)
 pnpm install -r
 # or: pnpm setup
