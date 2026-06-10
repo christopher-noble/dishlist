@@ -1,0 +1,37 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.6"
+    import: ["@key"]
+  )
+
+type Query {
+  discoverHealth: String!
+  discoverCategories: [DiscoverCategory!]!
+  discoverFeed: DiscoverFeed!
+}
+
+enum DiscoverCategoryId {
+  ALL
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  DESSERT
+  BEVERAGE
+}
+
+type DiscoverCategory {
+  id: DiscoverCategoryId!
+  label: String!
+  emoji: String!
+}
+
+type DiscoverFeedRecipeRef {
+  recipeId: ID!
+  rank: Int!
+}
+
+type DiscoverFeed {
+  categories: [DiscoverCategory!]!
+  generatedRecipes: [DiscoverFeedRecipeRef!]!
+}

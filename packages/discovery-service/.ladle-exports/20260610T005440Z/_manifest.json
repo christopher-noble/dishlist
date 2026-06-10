@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "corpusType": "recipe",
+  "exportedAt": "2026-06-10T00:54:40.305Z",
+  "runId": "20260610T005440Z",
+  "recordCount": 5,
+  "shardCount": 1,
+  "shardSize": 1000,
+  "filters": {
+    "excludeDeleted": true,
+    "excludeArchived": true
+  },
+  "shards": [
+    {
+      "index": 1,
+      "key": "recipes-00001.jsonl",
+      "uri": "/Users/admin/src/dev/dishlist/packages/discovery-service/.ladle-exports/20260610T005440Z/recipes-00001.jsonl",
+      "recordCount": 5
+    }
+  ],
+  "sagemaker": {
+    "inputMode": "File",
+    "contentType": "application/jsonlines",
+    "recommendedChannelName": "training"
+  }
+}

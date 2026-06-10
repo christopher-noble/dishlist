@@ -14,6 +14,7 @@ type MaterialIconName = ComponentProps<typeof MaterialIcons>['name'];
  */
 const MAPPING = {
   'house.fill': 'home',
+  'magnifyingglass': 'search',
   'person.fill': 'person',
   'envelope.fill': 'email',
   'paperplane.fill': 'send',

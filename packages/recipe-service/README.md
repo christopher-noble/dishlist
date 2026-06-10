@@ -65,6 +65,30 @@ Connects to shared Postgres in `../dev-environment` using database `recipe_servi
 - `updateRecipe(id: ID!, input: UpdateRecipeInput!)` - Update a recipe
 - `archiveRecipe(id: ID!)` - Archive a recipe
 
+## S3 recipe ingestion
+
+Batch job that exports SageMaker-ready JSONL shards plus a manifest from the `recipes` table to local disk (development) or S3 (staging/production). Lives in `jobs/s3-recipe-ingestion.ts`.
+
+| Environment | Destination | Output |
+| --- | --- | --- |
+| development | local files | `.s3-recipe-ingestion/{runId}/` |
+| staging / production | S3 | `s3://{bucket}/{prefix}/{runId}/` |
+
+```bash
+pnpm s3-recipe:ingest
+```
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Postgres URL (staging/production; dev uses `DB_*`) |
+| `S3_RECIPE_INGESTION_BATCH_SIZE` | Keyset page size (default `500`) |
+| `S3_RECIPE_INGESTION_SHARD_SIZE` | Records per JSONL shard (default `1000`) |
+| `S3_RECIPE_INGESTION_INCLUDE_ARCHIVED` | Include archived recipes when `true` |
+| `S3_RECIPE_INGESTION_LOCAL_OUTPUT_DIR` | Local output root (default `.s3-recipe-ingestion`) |
+| `S3_RECIPE_INGESTION_S3_BUCKET_ARN` | e.g. `arn:aws:s3:::dishlist-ml-staging` |
+| `S3_RECIPE_INGESTION_S3_PREFIX` | Object prefix (default `ml/recipe-ingestion`) |
+| `AWS_REGION` | Required for S3 uploads in staging/production |
+
 ## Tests
 
 ```bash

@@ -23,4 +23,21 @@ export const config = {
   media: {
     storageStrategy: 's3' as const,
   },
+  s3RecipeIngestion: {
+    destinationStrategy: 's3' as const,
+    batchSize: Number(process.env.S3_RECIPE_INGESTION_BATCH_SIZE ?? 500),
+    shardSize: Number(process.env.S3_RECIPE_INGESTION_SHARD_SIZE ?? 1000),
+    includeArchived: process.env.S3_RECIPE_INGESTION_INCLUDE_ARCHIVED === 'true',
+    schemaVersion: process.env.S3_RECIPE_INGESTION_SCHEMA_VERSION ?? '1.0.0',
+    localOutputDir:
+      process.env.S3_RECIPE_INGESTION_LOCAL_OUTPUT_DIR ?? '.s3-recipe-ingestion',
+    s3: {
+      bucketArn: process.env.S3_RECIPE_INGESTION_S3_BUCKET_ARN ?? '',
+      prefix: process.env.S3_RECIPE_INGESTION_S3_PREFIX ?? 'ml/recipe-ingestion',
+      region:
+        process.env.AWS_REGION?.trim() ??
+        process.env.AWS_DEFAULT_REGION?.trim() ??
+        '',
+    },
+  },
 } as const;

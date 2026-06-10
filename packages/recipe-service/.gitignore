@@ -59,6 +59,9 @@ lerna-debug.log*
 public/uploads/**
 !public/uploads/.gitkeep
 
+# S3 recipe ingestion job output (dev only)
+.s3-recipe-ingestion/
+
 # Runtime data
 pids
 *.pid
